@@ -1,0 +1,5 @@
+{
+  "name": "AnonBox",
+  "description": "A secure, anonymous confession platform with AI-powered sentiment analysis and an admin dashboard.",
+  "requestFramePermissions": []
+}
