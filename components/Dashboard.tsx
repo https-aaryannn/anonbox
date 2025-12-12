@@ -66,7 +66,7 @@ export const Dashboard: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-zinc-800">
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight">Confessions Dashboard</h1>
-                    <p className="text-zinc-400 mt-2">Overview of anonymous submissions.</p>
+                    <p className="text-zinc-400 mt-2">Overview of {confessions.length} anonymous submissions.</p>
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-grow md:flex-grow-0">
