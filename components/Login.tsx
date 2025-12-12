@@ -67,7 +67,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-all"
-                            placeholder="admin@anonbox.com"
+
                         />
                     </div>
                     <div>
@@ -77,7 +77,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-all"
-                            placeholder="••••••••"
+
                         />
                     </div>
 
