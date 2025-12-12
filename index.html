@@ -1,81 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AnonBox | Anonymous Confessions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnonBox | Anonymous Confessions</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            zinc: {
+              750: '#27272a',
+              850: '#1f1f22',
+              950: '#09090b',
             },
-            colors: {
-              zinc: {
-                750: '#27272a',
-                850: '#1f1f22',
-                950: '#09090b',
-              },
-              violet: {
-                550: '#7c3aed',
-                650: '#6d28d9',
-              }
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.5s ease-in-out',
-              'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              }
+            violet: {
+              550: '#7c3aed',
+              650: '#6d28d9',
             }
           },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            }
+          }
         },
-      }
-    </script>
-    <style>
-      body {
-        background-color: #09090b;
-        color: #f4f4f5; /* zinc-100 */
-        background-image: 
-          radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 40%),
-          linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px),
-          linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 100% 100%, 40px 40px, 40px 40px;
-        background-attachment: fixed;
-      }
-      
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 10px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #09090b;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #3f3f46; /* zinc-700 */
-        border-radius: 5px;
-        border: 2px solid #09090b;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #52525b; /* zinc-600 */
-      }
-    </style>
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      /* zinc-100 */
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 40%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+      background-attachment: fixed;
+    }
 
-<link rel="stylesheet" href="/index.css">
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      /* zinc-700 */
+      border-radius: 5px;
+      border: 2px solid #09090b;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+      /* zinc-600 */
+    }
+  </style>
+
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
