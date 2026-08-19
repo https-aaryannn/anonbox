@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { initializeApp, cert, getApps, getFirestore } from 'firebase-admin/app';
+import { initializeApp, cert, getApps, getFirestore, FieldValue } from 'firebase-admin/app';
 import crypto from 'crypto';
 
 let db: any = null;
@@ -52,7 +52,6 @@ async function authenticateKey(req: VercelRequest): Promise<string | null> {
 
   const docData = snapshot.docs[0].data();
   // Fire-and-forget lastUsedAt update
-  const { FieldValue } = await import('firebase-admin/firestore');
   snapshot.docs[0].ref
     .update({ lastUsedAt: FieldValue.serverTimestamp() })
     .catch(() => {});
