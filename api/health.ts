@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 let db: any = null;
 let dbError: string | null = null;
@@ -15,13 +15,12 @@ function initFirebaseAdmin() {
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
-    const adminAny: any = admin;
-    if (!adminAny.apps?.length) {
-      adminAny.initializeApp({
-        credential: adminAny.credential.cert(serviceAccount),
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
       });
     }
-    db = adminAny.firestore();
+    db = admin.firestore();
     dbError = null;
   } catch (err: any) {
     dbError = err.message || 'Failed to init Firebase Admin';
