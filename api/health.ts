@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 
-let db: FirebaseFirestore.Firestore | null = null;
+let db: any = null;
 let dbError: string | null = null;
 
 function initFirebaseAdmin() {
