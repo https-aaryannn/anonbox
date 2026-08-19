@@ -42,5 +42,6 @@ export default async function handler(
     ok: true,
     service: 'anonbox-api',
     dbReady: !!db,
+    detail: dbError,
   });
 }
