@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps, getFirestore } from 'firebase-admin/app';
 import crypto from 'crypto';
 
 let db: any = null;
@@ -16,14 +16,12 @@ function initFirebaseAdmin() {
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
-    // Check if already initialized (firebase-admin v12+)
-    const apps = admin.apps;
-    if (!apps || (Array.isArray(apps) && apps.length === 0) || (apps instanceof Map && apps.size === 0)) {
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+    if (getApps().length === 0) {
+      initializeApp({
+        credential: cert(serviceAccount),
       });
     }
-    db = admin.firestore();
+    db = getFirestore();
     dbError = null;
   } catch (err: any) {
     dbError = err.message || 'Failed to init Firebase Admin';
@@ -54,8 +52,9 @@ async function authenticateKey(req: VercelRequest): Promise<string | null> {
 
   const docData = snapshot.docs[0].data();
   // Fire-and-forget lastUsedAt update
+  const { FieldValue } = await import('firebase-admin/firestore');
   snapshot.docs[0].ref
-    .update({ lastUsedAt: admin.firestore.FieldValue.serverTimestamp() })
+    .update({ lastUsedAt: FieldValue.serverTimestamp() })
     .catch(() => {});
 
   return docData.ownerUid;
