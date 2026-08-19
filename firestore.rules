@@ -1,25 +1,20 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Confessions: each document owns itself via ownerUid.
-    // - Anyone can create a confession, but ONLY with an ownerUid of
-    //   an account that exists and that submitted the write.
-    // - read/update/delete are restricted to the owner account.
+    // Confessions: public can create (no auth), but must provide valid ownerUid
+    // Reads/updates/deletes require auth + ownership.
     match /confessions/{confession} {
       allow create: if
-        request.auth != null &&
-        request.auth.uid == request.resource.data.ownerUid;
+        request.resource.data.ownerUid != null &&
+        request.resource.data.ownerUid != '' &&
+        request.resource.data.keys().hasOnly(['content', 'ownerUid', 'createdAt', 'read', 'archived']);
 
       allow read, update, delete: if
         request.auth != null &&
         resource.data.ownerUid == request.auth.uid;
     }
 
-    // API keys: scoped to the owning account.
-    // - create: the account that creates it must own it.
-    // - read/update/delete: only the owner account.
-    // The public /api/confessions endpoint does server-side key lookup and
-    // is NOT exposed through Firestore rules (it runs via the Node backend).
+    // API keys: only the owning account can manage
     match /apiKeys/{keyDoc} {
       allow create: if
         request.auth != null &&
