@@ -68,7 +68,8 @@ const App: React.FC = () => {
   } else if (route.name === 'login') {
     view = isLoggedIn ? <Dashboard /> : <Login />;
   } else {
-    view = <SubmissionForm ownerUid={null} />;
+    // Landing page: redirect to login (no global confession box anymore)
+    view = <Login />;
   }
 
   return (
@@ -80,27 +81,18 @@ const App: React.FC = () => {
       currentUserUid={auth.currentUser?.uid ?? null}
     >
       {view}
-      {route.name !== 'public' && (
+      {route.name === 'login' && !isLoggedIn ? (
+        <Signup />
+      ) : isLoggedIn && route.name !== 'public' ? (
         <div className="mt-10 text-center">
-          {route.name === 'login' && !isLoggedIn ? (
-            <Signup />
-          ) : isLoggedIn ? (
-            <a
-              href={`#/u/${auth.currentUser?.uid ?? ''}`}
-              className="text-sm text-zinc-500 hover:text-violet-400 transition-colors"
-            >
-              Your public confession page
-            </a>
-          ) : (
-            <a
-              href="#/login"
-              className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-            >
-              Have an account? Log in to your dashboard
-            </a>
-          )}
+          <a
+            href={`#/u/${auth.currentUser?.uid ?? ''}`}
+            className="text-sm text-zinc-500 hover:text-violet-400 transition-colors"
+          >
+            Your public confession page
+          </a>
         </div>
-      )}
+      ) : null}
     </Layout>
   );
 };
