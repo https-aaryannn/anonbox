@@ -2,10 +2,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import admin from 'firebase-admin';
 import crypto from 'crypto';
 
-let db: admin.firestore.Firestore | null = null;
+let db: any = null;
 let dbError: string | null = null;
 
-function initFirebaseAdmin(): admin.firestore.Firestore | null {
+function initFirebaseAdmin() {
   if (db) return db;
 
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
@@ -16,13 +16,14 @@ function initFirebaseAdmin(): admin.firestore.Firestore | null {
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
-    const adminApps = (admin as any).apps;
-    if (!adminApps.length) {
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+    // Use type assertion to avoid TS issues on Vercel
+    const adminAny: any = admin;
+    if (!adminAny.apps?.length) {
+      adminAny.initializeApp({
+        credential: adminAny.credential.cert(serviceAccount),
       });
     }
-    db = admin.firestore();
+    db = adminAny.firestore();
     dbError = null;
   } catch (err: any) {
     dbError = err.message || 'Failed to init Firebase Admin';
@@ -87,9 +88,7 @@ export default async function handler(
     return res.status(401).json({ error: 'Invalid or missing API key' });
   }
 
-  // Rate limiting (simple in-memory per instance - acceptable for serverless)
-  // Vercel isolates instances; for stricter limits use Upstash Redis or similar.
-
+  // Query params
   const rawLimit = parseInt((req.query.limit as string) || '10', 10);
   const rawOffset = parseInt((req.query.offset as string) || '0', 10);
   const itemLimit = Number.isNaN(rawLimit) ? 10 : Math.min(Math.max(rawLimit, 1), 50);
@@ -110,7 +109,7 @@ export default async function handler(
     const snapshot = await q.limit(itemLimit).offset(itemOffset).get();
 
     const confessions: any[] = [];
-    snapshot.forEach((docSnap: FirebaseFirestore.QueryDocumentSnapshot) => {
+    snapshot.forEach((docSnap: any) => {
       const data = docSnap.data();
       if (
         archivedFilter !== undefined &&
