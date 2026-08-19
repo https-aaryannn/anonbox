@@ -15,7 +15,9 @@ function initFirebaseAdmin() {
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
-    if (!admin.apps.length) {
+    // Check if already initialized (firebase-admin v12+)
+    const apps = admin.apps;
+    if (!apps || (Array.isArray(apps) && apps.length === 0) || (apps instanceof Map && apps.size === 0)) {
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
       });
