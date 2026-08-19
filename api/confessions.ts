@@ -1,9 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import crypto from 'crypto';
 
-// Lazy init Firebase Admin
-let db: admin.firestore.Firestore | null = null;
+let db: FirebaseFirestore.Firestore | null = null;
 let dbError: string | null = null;
 
 function initFirebaseAdmin() {
