@@ -2,10 +2,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import admin from 'firebase-admin';
 import crypto from 'crypto';
 
-let db: any = null;
+let db: admin.firestore.Firestore | null = null;
 let dbError: string | null = null;
 
-function initFirebaseAdmin() {
+function initFirebaseAdmin(): admin.firestore.Firestore | null {
   if (db) return db;
 
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
@@ -16,7 +16,8 @@ function initFirebaseAdmin() {
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
-    if (!admin.apps.length) {
+    const adminApps = (admin as any).apps;
+    if (!adminApps.length) {
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
       });
@@ -109,7 +110,7 @@ export default async function handler(
     const snapshot = await q.limit(itemLimit).offset(itemOffset).get();
 
     const confessions: any[] = [];
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach((docSnap: FirebaseFirestore.QueryDocumentSnapshot) => {
       const data = docSnap.data();
       if (
         archivedFilter !== undefined &&
