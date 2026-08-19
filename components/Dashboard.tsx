@@ -38,7 +38,6 @@ export const Dashboard: React.FC = () => {
     };
 
 
-
     const handleExportCSV = () => {
         const headers = ["ID", "Content", "Date", "Sentiment Score", "Tags"];
         const rows = confessions.map(c => [
@@ -50,12 +49,11 @@ export const Dashboard: React.FC = () => {
         ]);
 
         const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `confessions-${Date.now()}.csv`;
-        a.click();
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `confessions-${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
     };
 
     const filteredConfessions = confessions.filter(c =>
@@ -65,129 +63,116 @@ export const Dashboard: React.FC = () => {
     return (
         <>
         <div className="animate-fade-in max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-zinc-800">
-                <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Confessions Dashboard</h1>
-                    <p className="text-zinc-400 mt-2">Overview of {confessions.length} anonymous submissions.</p>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-6 border-b border-zinc-800">
+                <div className="w-full">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Confessions Dashboard</h1>
+                    <p className="text-zinc-400 mt-1 text-sm sm:text-base">Overview of {confessions.length} anonymous submissions.</p>
                     <a
                         href={`#/u/${auth.currentUser?.uid ?? ''}`}
-                        className="mt-3 inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                        className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        View your public confession page
+                        <span className="hidden sm:inline">View your public confession page</span>
                     </a>
                 </div>
-                <div className="flex gap-3 w-full md:w-auto">
-                    <div className="relative flex-grow md:flex-grow-0">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <div className="relative flex-grow">
                         <input
                             type="text"
-                            placeholder="Search content or tags..."
+                            placeholder="Search confessions..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="bg-zinc-900 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 w-full md:w-72 transition-all placeholder:text-zinc-600"
+                            className="bg-zinc-900 border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 w-full transition-all placeholder:text-zinc-600"
                         />
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3.5 top-3 text-zinc-500"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </div>
                     <button
                         onClick={handleExportCSV}
-                        className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-zinc-700"
+                        className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-medium border border-zinc-700 transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Export
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span className="hidden sm:inline">Export CSV</span>
                     </button>
                 </div>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-32">
+                <div className="flex justify-center py-16 sm:py-32">
                     <div className="flex flex-col items-center gap-4">
-                        <span className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></span>
-                        <p className="text-zinc-500 text-sm">Loading submissions...</p>
+                        <span className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></span>
+                        <p className="text-zinc-500 text-sm sm:text-base">Loading submissions...</p>
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-6">
-                    {filteredConfessions.map(confession => (
-                        <div
-                            key={confession.id}
-                            className={`group relative bg-zinc-900 border rounded-xl overflow-hidden transition-all duration-300 ${confession.isRead
-                                ? 'border-zinc-800 opacity-80 hover:opacity-100'
-                                : 'border-violet-500/30 shadow-lg shadow-violet-900/10 ring-1 ring-violet-500/10'
-                                }`}
-                        >
-                            {/* Status Bar Indicator */}
-                            <div className={`absolute left-0 top-0 bottom-0 w-1 ${confession.isRead ? 'bg-zinc-700' : 'bg-violet-500'}`}></div>
-
-                            <div className="p-6 pl-8">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-xs font-mono font-medium text-zinc-500 bg-zinc-950 px-2 py-1 rounded border border-zinc-800">
-                                            {new Date(confession.createdAt).toLocaleDateString()} &bull; {new Date(confession.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </span>
-                                        {!confession.isRead && (
-                                            <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full border border-violet-500/20">
-                                                New
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            onClick={() => handleMarkRead(confession.id, confession.isRead)}
-                                            className={`p-2 rounded-lg transition-colors border ${confession.isRead ? 'border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800' : 'border-violet-900/50 text-violet-400 hover:bg-violet-500/10 bg-violet-500/5'}`}
-                                            title={confession.isRead ? "Mark as Unread" : "Mark as Read"}
-                                        >
-                                            {confession.isRead ? (
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                                            ) : (
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12l5 5L22 7"></path></svg>
-                                            )}
-                                        </button>
-                                        <button
-                                            onClick={() => handleArchive(confession.id, confession.archived)}
-                                            className={`p-2 rounded-lg transition-colors border ${confession.archived ? 'border-orange-500/50 text-orange-400 bg-orange-500/10' : 'border-zinc-800 text-zinc-500 hover:text-orange-300 hover:bg-orange-500/10 hover:border-orange-500/30'}`}
-                                            title={confession.archived ? "Unarchive" : "Archive"}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(confession.id)}
-                                            className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 border border-zinc-800 hover:border-red-500/30 rounded-lg transition-colors"
-                                            title="Delete Submission"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <p className="text-zinc-100 text-lg leading-relaxed whitespace-pre-wrap mb-8 font-normal">
-                                    {confession.content}
-                                </p>
-
-                                {confession.archived && (
-                                    <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full">
-                                        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                                        <span className="text-xs font-medium text-orange-400">Archived</span>
-                                    </div>
-                                )}
-
-                                {/* Removed AI Section */}
-                            </div>
-                        </div>
-                    ))}
-
-                    {filteredConfessions.length === 0 && (
-                        <div className="flex flex-col items-center justify-center py-20 text-zinc-500 border border-dashed border-zinc-800 rounded-xl bg-zinc-900/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-                            <p className="text-lg font-medium">No confessions found</p>
+                <div className="grid grid-cols-1 gap-4 sm:gap-6">
+                    {filteredConfessions.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12 sm:py-20 text-zinc-500 border border-dashed border-zinc-800 rounded-xl bg-zinc-900/30 px-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50 sm:w-48 sm:h-48"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                            <p className="text-base sm:text-lg font-medium">No confessions found</p>
                             <p className="text-sm opacity-60">Try adjusting your search terms</p>
                         </div>
+                    ) : (
+                        filteredConfessions.map(confession => (
+                            <div
+                                key={confession.id}
+                                className={`group relative bg-zinc-900 border rounded-xl overflow-hidden transition-all duration-300 ${confession.isRead
+                                    ? 'border-zinc-800 opacity-80 hover:opacity-100'
+                                    : 'border-violet-500/30 shadow-lg shadow-violet-900/10 ring-1 ring-violet-500/10'
+                                    }`}
+                            >
+                                {/* Status Bar Indicator */}
+                                <div className={`absolute left-0 top-0 bottom-0 w-1 ${confession.isRead ? 'bg-zinc-700' : 'bg-violet-500'}`}></div>
+
+                                <div className="p-4 sm:p-6 pl-7 sm:pl-10">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-xs font-mono font-medium text-zinc-500 bg-zinc-950 px-2 py-1 rounded border border-zinc-800 whitespace-nowrap">
+                                                {new Date(confession.createdAt).toLocaleDateString()} &bull; {new Date(confession.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                            {!confession.isRead && (
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full border border-violet-500/20 whitespace-nowrap">
+                                                    New
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex gap-2 opacity-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                onClick={() => handleMarkRead(confession.id, confession.isRead)}
+                                                className={`p-2 rounded-lg transition-colors border ${confession.isRead ? 'border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800' : 'border-violet-900/50 text-violet-400 hover:bg-violet-500/10 bg-violet-500/5'}`}
+                                                title={confession.isRead ? "Mark as Unread" : "Mark as Read"}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                                            </button>
+                                            <button
+                                                onClick={() => handleArchive(confession.id, confession.archived)}
+                                                className={`p-2 rounded-lg transition-colors border ${confession.archived ? 'border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800' : 'border-emerald-900/50 text-emerald-400 hover:bg-emerald-500/10 bg-emerald-500/5'}`}
+                                                title={confession.archived ? "Unarchive" : "Archive"}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><line x1="8" y1="16" x2="16" y2="16"></line><line x1="8" y1="8" x2="16" y2="8"></line></svg>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(confession.id)}
+                                                className="p-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                                                title="Delete permanently"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p className={`text-base sm:text-lg leading-relaxed break-words ${confession.isRead ? 'text-zinc-400' : 'text-white'}`}>
+                                        {confession.content}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
                     )}
                 </div>
             )}
-        </div>
 
-        <APIKeyManager />
+            <APIKeyManager />
+        </div>
         </>
     );
 };

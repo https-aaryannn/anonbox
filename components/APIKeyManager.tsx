@@ -7,6 +7,18 @@ import {
 } from '../services/firebase';
 import { ApiKeyStatus as ApiKeyStatusType } from '../types';
 
+const CURL_EXAMPLE = 'curl -H "Authorization: Bearer YOUR_API_KEY" \\\n  "/api/confessions?limit=10"';
+const RESPONSE_EXAMPLE = `{
+  "confessions": [
+    {
+      "id": "123",
+      "content": "I have a crush on someone here...",
+      "created_at": "2026-08-19T14:30:00Z"
+    }
+  ],
+  "count": 1
+}`;
+
 export const APIKeyManager: React.FC = () => {
   const [status, setStatus] = useState<ApiKeyStatusType>({
     hasKey: false,
@@ -91,61 +103,61 @@ export const APIKeyManager: React.FC = () => {
   };
 
   return (
-    <div className="mt-12 pt-10 border-t border-zinc-800">
-      <h2 className="text-2xl font-bold text-white mb-2">API Access</h2>
-      <p className="text-zinc-400 text-sm mb-6 max-w-2xl">
+    <div className="mt-8 sm:mt-12 pt-6 sm:pt-10 border-t border-zinc-800">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">API Access</h2>
+      <p className="text-zinc-400 text-xs sm:text-sm mb-4 sm:mb-6 max-w-2xl">
         Use your private API key to pull the latest confessions submitted to your page in
-        external apps, widgets, or displays. This key grants read access to your confessions —
+        external apps, widgets, or displays. This key grants read access to your confessions \u2014
         <span className="text-zinc-200 font-medium"> keep it secret</span>. Never paste it into
         public code or share it.
       </p>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-zinc-500 text-sm">
+        <div className="flex items-center gap-2 text-zinc-500 text-xs sm:text-sm">
           <span className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></span>
-          Checking key status…
+          Checking key status\u2026
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-semibold uppercase tracking-wider text-zinc-400">Key status</span>
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400">Key status</span>
               <span
-                className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
                   status.hasKey
                     ? 'bg-green-500/10 text-green-400 border border-green-500/20'
                     : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${status.hasKey ? 'bg-green-400' : 'bg-zinc-500'}`}></span>
+                <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${status.hasKey ? 'bg-green-400' : 'bg-zinc-500'}`}></span>
                 {status.hasKey ? 'Active' : 'No key'}
               </span>
             </div>
 
             {status.hasKey && (
-              <dl className="space-y-3 text-sm mb-6">
-                <div className="flex justify-between gap-4 items-center">
+              <dl className="space-y-2 sm:space-y-3 text-xs sm:text-sm mb-4 sm:mb-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
                   <dt className="text-zinc-500">Created</dt>
-                  <dd className="text-zinc-200">
-                    {status.createdAt ? new Date(status.createdAt).toLocaleString() : '—'}
+                  <dd className="text-zinc-200 text-right sm:text-left">
+                    {status.createdAt ? new Date(status.createdAt).toLocaleString() : '\u2014'}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4 items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
                   <dt className="text-zinc-500">Key</dt>
-                  <dd className="flex items-center gap-2">
-                    <code className="text-zinc-200 font-mono flex-1 break-all">{status.preview}</code>
+                  <dd className="flex items-center gap-2 flex-1 min-w-0">
+                    <code className="text-zinc-200 font-mono flex-1 break-all text-xs sm:text-sm">{status.preview}</code>
                     <button
                       onClick={handleCopyPreview}
                       title="Copy masked key preview"
-                      className="px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-zinc-700 transition-colors"
+                      className="px-2 py-1 text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-zinc-700 transition-colors whitespace-nowrap"
                     >
                       {copiedPreview ? 'Copied!' : 'Copy'}
                     </button>
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4 items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
                   <dt className="text-zinc-500">Last used</dt>
-                  <dd className="text-zinc-200">
+                  <dd className="text-zinc-200 text-right sm:text-left">
                     {status.lastUsedAt ? new Date(status.lastUsedAt).toLocaleString() : 'Never'}
                   </dd>
                 </div>
@@ -153,16 +165,16 @@ export const APIKeyManager: React.FC = () => {
             )}
 
             {rawKey && (
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <div className="bg-zinc-950 border border-emerald-500/30 rounded-lg p-3 mb-2">
                   <p className="text-[10px] uppercase tracking-wider text-emerald-400 mb-1 font-bold">
                     Your new API key (shown once)
                   </p>
-                  <code className="text-emerald-300 text-sm break-all font-mono select-all">{rawKey}</code>
+                  <code className="text-emerald-300 text-xs sm:text-sm break-all font-mono select-all">{rawKey}</code>
                 </div>
                 <button
                   onClick={handleCopy}
-                  className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-medium border border-zinc-700 transition-colors"
+                  className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-xs sm:text-sm font-medium border border-zinc-700 transition-colors w-full sm:w-auto"
                 >
                   {copied ? 'Copied!' : 'Copy key'}
                 </button>
@@ -171,15 +183,15 @@ export const APIKeyManager: React.FC = () => {
 
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4">
-                <p className="text-red-400 text-sm">{error}</p>
+                <p className="text-red-400 text-xs sm:text-sm">{error}</p>
               </div>
             )}
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               {!status.hasKey && (
                 <button
                   onClick={handleGenerate}
-                  className="px-4 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-xs sm:text-sm font-semibold transition-colors w-full"
                 >
                   Generate API key
                 </button>
@@ -188,13 +200,13 @@ export const APIKeyManager: React.FC = () => {
                 <>
                   <button
                     onClick={handleRegenerate}
-                    className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-medium border border-zinc-700 transition-colors"
+                    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-xs sm:text-sm font-medium border border-zinc-700 transition-colors w-full sm:w-auto"
                   >
                     Regenerate
                   </button>
                   <button
                     onClick={handleRevoke}
-                    className="px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm font-semibold border border-red-500/20 transition-colors"
+                    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs sm:text-sm font-semibold border border-red-500/20 transition-colors w-full sm:w-auto"
                   >
                     Revoke
                   </button>
@@ -203,41 +215,31 @@ export const APIKeyManager: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 mb-4">Usage</h3>
-            <div className="space-y-4 text-sm">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-6">
+            <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400 mb-4">Usage</h3>
+            <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
               <div>
                 <p className="text-zinc-500 mb-1">Endpoint</p>
-                <code className="text-zinc-200 bg-zinc-950 border border-zinc-800 rounded px-2 py-1 block font-mono text-xs">
+                <code className="text-zinc-200 bg-zinc-950 border border-zinc-800 rounded px-2 py-1 block font-mono text-[10px] sm:text-xs overflow-x-auto">
                   GET /api/confessions?limit=10
                 </code>
               </div>
               <div>
                 <p className="text-zinc-500 mb-1">Example request</p>
-                <pre className="bg-zinc-950 border border-zinc-800 rounded p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  "/api/confessions?limit=10"`}
+                <pre className="bg-zinc-950 border border-zinc-800 rounded p-2 sm:p-3 text-[10px] sm:text-xs font-mono text-zinc-300 overflow-x-auto">
+{CURL_EXAMPLE}
                 </pre>
               </div>
               <div>
                 <p className="text-zinc-500 mb-1">Example response</p>
-                <pre className="bg-zinc-950 border border-zinc-800 rounded p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
-{`{
-  "confessions": [
-    {
-      "id": "123",
-      "content": "I have a crush on someone here...",
-      "created_at": "2026-08-19T14:30:00Z"
-    }
-  ],
-  "count": 1
-}`}
+                <pre className="bg-zinc-950 border border-zinc-800 rounded p-2 sm:p-3 text-[10px] sm:text-xs font-mono text-zinc-300 overflow-x-auto">
+{RESPONSE_EXAMPLE}
                 </pre>
               </div>
-              <div className="pt-2">
-                <p className="text-zinc-400">
+              <div className="pt-2 border-t border-zinc-800">
+                <p className="text-zinc-400 text-[10px] sm:text-xs">
                   Returns the newest confessions for your page, newest first. Supports{' '}
-                  <code className="text-violet-300 font-mono">?limit</code> (1–50, default 10) and{' '}
+                  <code className="text-violet-300 font-mono">?limit</code> (1\u201350, default 10) and{' '}
                   <code className="text-violet-300 font-mono">?offset</code> for pagination.
                 </p>
               </div>
