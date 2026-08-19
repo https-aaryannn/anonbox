@@ -54,8 +54,9 @@ async function authenticateKey(req: VercelRequest): Promise<string | null> {
 
   const docData = snapshot.docs[0].data();
   // Fire-and-forget lastUsedAt update
+  const adminAny: any = admin;
   snapshot.docs[0].ref
-    .update({ lastUsedAt: admin.firestore.FieldValue.serverTimestamp() })
+    .update({ lastUsedAt: adminAny.firestore.FieldValue.serverTimestamp() })
     .catch(() => {});
 
   return docData.ownerUid;
