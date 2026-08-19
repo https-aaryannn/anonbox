@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@google/genai": "^1.33.0",
+    "@vercel/node": "^5.10.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "firebase": "^12.6.0",
+    "firebase-admin": "^14.2.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },

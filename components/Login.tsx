@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { loginAdmin } from '../services/firebase';
+import { signInUser } from '../services/firebase';
 
 interface LoginProps {
     onLoginSuccess: () => void;
@@ -19,7 +19,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         setError('');
 
         try {
-            await loginAdmin(email, password);
+            await signInUser(email, password);
             // onLoginSuccess will be handled by App.tsx listening to auth state, 
             // but we can call it here or just let the redirect happen.
             // However, App.tsx handles state, so we might need to rely on that.
@@ -55,8 +55,8 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-800 mb-4 text-violet-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-white">Admin Access</h2>
-                    <p className="text-zinc-400 text-sm mt-2">Please authenticate to continue.</p>
+                    <h2 className="text-2xl font-bold text-white">Account Access</h2>
+                    <p className="text-zinc-400 text-sm mt-2">Log in to manage your confession page.</p>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-5">
@@ -108,9 +108,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 </form>
 
                 <div className="mt-8 pt-6 border-t border-zinc-800 text-center">
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Login Required</p>
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Your own page</p>
                     <p className="text-sm font-mono text-zinc-300">
-                        Use your Firebase Admin credentials
+                        Manage your confessions and API key
                     </p>
                 </div>
             </div>

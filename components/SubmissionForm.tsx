@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { saveConfession } from '../services/firebase';
+import { saveConfessionForOwner } from '../services/firebase';
 
-export const SubmissionForm: React.FC = () => {
+interface SubmissionFormProps {
+  ownerUid: string | null;
+}
+
+export const SubmissionForm: React.FC<SubmissionFormProps> = ({ ownerUid }) => {
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -10,9 +14,14 @@ export const SubmissionForm: React.FC = () => {
     e.preventDefault();
     if (!text.trim()) return;
 
+    if (!ownerUid) {
+      setStatus('error');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await saveConfession(text);
+      await saveConfessionForOwner(ownerUid, text);
       setStatus('success');
       setText('');
       // Reset status after 3 seconds
@@ -35,7 +44,7 @@ export const SubmissionForm: React.FC = () => {
           </svg>
         </div>
         <h2 className="text-4xl font-bold text-white mb-3">Received.</h2>
-        <p className="text-zinc-300 text-lg max-w-md">Your confession has been encrypted and securely recorded anonymously.</p>
+        <p className="text-zinc-300 text-lg max-w-md">Your confession has been stored anonymously on this account's page.</p>
         <button
           onClick={() => setStatus('idle')}
           className="mt-10 px-6 py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium transition-all"

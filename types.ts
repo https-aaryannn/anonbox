@@ -14,13 +14,25 @@ export interface AIAnalysis {
   riskFlag: boolean; // True if content is concerning
 }
 
-export enum AppView {
-  SUBMIT = 'SUBMIT',
-  LOGIN = 'LOGIN',
-  DASHBOARD = 'DASHBOARD'
-}
-
 export interface User {
   uid: string;
   email: string | null;
 }
+
+export type ApiKeyStatus = {
+  hasKey: boolean;
+  createdAt: number | null;
+  lastUsedAt: number | null;
+  /** Masked preview of the key hash shown when the raw key is no longer available. */
+  preview: string | null;
+};
+
+export type ApiKeyResult =
+  | { ok: true; key: string }
+  | { ok: false; error: string };
+
+export type Route =
+  | { name: 'landing' }
+  | { name: 'login' }
+  | { name: 'dashboard' }
+  | { name: 'public'; ownerUid: string };

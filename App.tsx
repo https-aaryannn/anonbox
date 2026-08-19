@@ -1,71 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout } from './components/Layout';
 import { SubmissionForm } from './components/SubmissionForm';
 import { Login } from './components/Login';
+import { Signup } from './components/Signup';
 import { Dashboard } from './components/Dashboard';
-import { AppView } from './types';
-import { subscribeToAuth, logoutAdmin } from './services/firebase';
+import { PublicPage } from './components/PublicPage';
+import { Route } from './types';
+import { subscribeToAuth, signOutUser, auth } from './services/firebase';
+
+export function parseRoute(hash: string): Route {
+  const path = hash.replace(/^#\/?/, '');
+  if (!path) return { name: 'landing' };
+  const [first, second] = path.split('/');
+  if (first === 'u' && second) {
+    return { name: 'public', ownerUid: decodeURIComponent(second) };
+  }
+  if (first === 'login') return { name: 'login' };
+  if (first === 'dashboard') return { name: 'dashboard' };
+  return { name: 'landing' };
+}
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<AppView>(AppView.SUBMIT);
+  const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuth((user) => {
-      if (user) {
-        setIsLoggedIn(true);
-        // Optional: Auto-navigate to dashboard if on login page?
-        // But let's respect currentView logic or update it.
-        // If user is logged in and on LOGIN view, go to DASHBOARD.
-        // We can't easily access 'currentView' inside this closure without ref refactoring or dependency,
-        // but setState callback works.
-        // Let's just set logged in. The user can navigate or we can force it.
-      } else {
-        setIsLoggedIn(false);
-        // If on dashboard, should probably go to login or submit?
-        // Let's handle this in the render/navigate logic or another effect.
-      }
-    });
-
-    return () => unsubscribe();
+    const onHashChange = () => setRoute(parseRoute(window.location.hash));
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  const handleLoginSuccess = () => {
-    // Auth listener handles state, but it is async.
-    // Optimistically set logged in to avoid flash of empty dashboard
-    setIsLoggedIn(true);
-    setCurrentView(AppView.DASHBOARD);
-  };
+  useEffect(() => {
+    const unsubscribe = subscribeToAuth((user) => {
+      setIsLoggedIn(!!user);
+      if (user) {
+        const current = parseRoute(window.location.hash);
+        if (current.name === 'login') {
+          setRoute({ name: 'dashboard' });
+        }
+      }
+    });
+    return () => unsubscribe;
+  }, []);
 
-  const handleLogout = () => {
-    logoutAdmin();
-    // Auth listener will handle setIsLoggedIn(false)
-    setCurrentView(AppView.LOGIN);
-  };
-
-  const navigate = (view: AppView) => {
-    if (view === AppView.DASHBOARD && !isLoggedIn) {
-      setCurrentView(AppView.LOGIN);
+  const navigate = (next: Route) => {
+    let hash = '';
+    if (next.name === 'login') hash = '#/login';
+    else if (next.name === 'dashboard') hash = '#/dashboard';
+    else if (next.name === 'public') hash = `#/u/${encodeURIComponent(next.ownerUid)}`;
+    if (window.location.hash === hash) {
+      setRoute(next);
     } else {
-      setCurrentView(view);
+      window.location.hash = hash;
     }
   };
 
+  const handleLogout = async () => {
+    await signOutUser();
+    navigate({ name: 'landing' });
+  };
+
+  let view: React.ReactNode;
+  if (route.name === 'public') {
+    view = <PublicPage ownerUid={route.ownerUid} />;
+  } else if (route.name === 'dashboard') {
+    view = isLoggedIn ? <Dashboard /> : <Login />;
+  } else if (route.name === 'login') {
+    view = isLoggedIn ? <Dashboard /> : <Login />;
+  } else {
+    view = <SubmissionForm ownerUid={null} />;
+  }
+
   return (
     <Layout
-      currentView={currentView}
+      currentView={route}
       onNavigate={navigate}
       isLoggedIn={isLoggedIn}
       onLogout={handleLogout}
+      currentUserUid={auth.currentUser?.uid ?? null}
     >
-      {currentView === AppView.SUBMIT && <SubmissionForm />}
-      {currentView === AppView.LOGIN && <Login onLoginSuccess={handleLoginSuccess} />}
-      {currentView === AppView.DASHBOARD && (
-        isLoggedIn ? <Dashboard /> : (
-          <div className="flex h-[50vh] w-full items-center justify-center">
-            <span className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></span>
-          </div>
-        )
+      {view}
+      {route.name !== 'public' && (
+        <div className="mt-10 text-center">
+          {route.name === 'login' && !isLoggedIn ? (
+            <Signup />
+          ) : isLoggedIn ? (
+            <a
+              href={`#/u/${auth.currentUser?.uid ?? ''}`}
+              className="text-sm text-zinc-500 hover:text-violet-400 transition-colors"
+            >
+              Your public confession page
+            </a>
+          ) : (
+            <a
+              href="#/login"
+              className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              Have an account? Log in to your dashboard
+            </a>
+          )}
+        </div>
       )}
     </Layout>
   );

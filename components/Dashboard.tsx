@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Confession } from '../types';
-import { getConfessions, deleteConfession, updateConfession, archiveConfession, markConfessionRead } from '../services/firebase';
+import { getMyConfessions, deleteConfession, archiveConfession, markConfessionRead, auth } from '../services/firebase';
+import { APIKeyManager } from './APIKeyManager';
 
 
 export const Dashboard: React.FC = () => {
@@ -10,7 +11,7 @@ export const Dashboard: React.FC = () => {
 
     const loadData = async () => {
         setLoading(true);
-        const data = await getConfessions();
+        const data = await getMyConfessions();
         setConfessions(data.sort((a, b) => b.createdAt - a.createdAt));
         setLoading(false);
     };
@@ -62,11 +63,19 @@ export const Dashboard: React.FC = () => {
     );
 
     return (
+        <>
         <div className="animate-fade-in max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-zinc-800">
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight">Confessions Dashboard</h1>
                     <p className="text-zinc-400 mt-2">Overview of {confessions.length} anonymous submissions.</p>
+                    <a
+                        href={`#/u/${auth.currentUser?.uid ?? ''}`}
+                        className="mt-3 inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        View your public confession page
+                    </a>
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-grow md:flex-grow-0">
@@ -177,5 +186,8 @@ export const Dashboard: React.FC = () => {
                 </div>
             )}
         </div>
+
+        <APIKeyManager />
+        </>
     );
 };
