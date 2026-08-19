@@ -18,6 +18,7 @@ export const APIKeyManager: React.FC = () => {
   const [rawKey, setRawKey] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [copiedPreview, setCopiedPreview] = useState(false);
 
   const uid = auth.currentUser?.uid;
 
@@ -52,6 +53,17 @@ export const APIKeyManager: React.FC = () => {
       await navigator.clipboard.writeText(rawKey);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError('Could not copy to clipboard.');
+    }
+  };
+
+  const handleCopyPreview = async () => {
+    if (!status.preview) return;
+    try {
+      await navigator.clipboard.writeText(status.preview);
+      setCopiedPreview(true);
+      setTimeout(() => setCopiedPreview(false), 2000);
     } catch {
       setError('Could not copy to clipboard.');
     }
@@ -112,17 +124,26 @@ export const APIKeyManager: React.FC = () => {
 
             {status.hasKey && (
               <dl className="space-y-3 text-sm mb-6">
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-4 items-center">
                   <dt className="text-zinc-500">Created</dt>
                   <dd className="text-zinc-200">
                     {status.createdAt ? new Date(status.createdAt).toLocaleString() : '—'}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-4 items-center">
                   <dt className="text-zinc-500">Key</dt>
-                  <dd className="text-zinc-200 font-mono">{status.preview}</dd>
+                  <dd className="flex items-center gap-2">
+                    <code className="text-zinc-200 font-mono flex-1 break-all">{status.preview}</code>
+                    <button
+                      onClick={handleCopyPreview}
+                      title="Copy masked key preview"
+                      className="px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-zinc-700 transition-colors"
+                    >
+                      {copiedPreview ? 'Copied!' : 'Copy'}
+                    </button>
+                  </dd>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-4 items-center">
                   <dt className="text-zinc-500">Last used</dt>
                   <dd className="text-zinc-200">
                     {status.lastUsedAt ? new Date(status.lastUsedAt).toLocaleString() : 'Never'}
